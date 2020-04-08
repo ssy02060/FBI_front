@@ -12,14 +12,26 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.fbi.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:id="@+id/navigation_gps"
+        android:name="com.example.fbi.ui.gps.GPSFragment"
+        android:label="@string/title_GPS"
         tools:layout="@layout/fragment_gps" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.fbi.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:id="@+id/navigation_camera"
+        android:name="com.example.fbi.ui.camera.CameraFragment"
+        android:label="@string/title_camera"
         tools:layout="@layout/fragment_camera" />
+
+    <fragment
+        android:id="@+id/navigation_bookshelf"
+        android:name="com.example.fbi.ui.bookshelf.BookshelfFragment"
+        android:label="@string/title_bookshelf"
+        tools:layout="@layout/fragment_bookshelf" />
+
+    <fragment
+        android:id="@+id/navigation_mypage"
+        android:name="com.example.fbi.ui.mypage.MyPageFragment"
+        android:label="@string/title_mypage"
+        tools:layout="@layout/fragment_mypage" />
 </navigation>

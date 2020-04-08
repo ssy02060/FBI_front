@@ -1,4 +1,4 @@
-package com.example.fbi.ui.dashboard
+package com.example.fbi.ui.camera
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.fbi.R
 
-class DashboardFragment : Fragment() {
+class CameraFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var cameraViewModel: CameraViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_gps, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
+        cameraViewModel =
+                ViewModelProviders.of(this).get(CameraViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_camera, container, false)
+        val textView: TextView = root.findViewById(R.id.text_camera)
+        cameraViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root
