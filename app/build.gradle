@@ -53,6 +53,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0' // DrawerLayout
-    implementation 'com.google.android.material:material:1.0.0' // NavigationView
-
+    implementation 'me.relex:circleindicator:2.1.4' //ViewPager indicator
+    implementation "androidx.recyclerview:recyclerview:1.0.0"//recyclerview for best5 books
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0' //ViewPager2 for best5 books
 }

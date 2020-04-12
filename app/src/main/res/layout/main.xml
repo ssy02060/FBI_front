@@ -9,12 +9,13 @@
     android:fitsSystemWindows="true">
 
     <!--메인 레이아웃-->
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/activity_main" />
 
-    <!--자식 레이아웃. Navigation Drawer-->
+    <include
+        layout="@layout/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--Navigation Drawer-->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/main_navigationView"
         android:layout_width="wrap_content"
@@ -23,4 +24,5 @@
         app:headerLayout="@layout/drawer_header">
 
     </com.google.android.material.navigation.NavigationView>
+
 </androidx.drawerlayout.widget.DrawerLayout>

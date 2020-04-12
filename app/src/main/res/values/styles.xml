@@ -10,6 +10,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <!-- 상태바 색상(for DrawerLayout)-->
         <item name="android:statusBarColor">#33D59F9F</item>
+        <item name="editTextColor">#FFFFFF</item>
     </style>
 
 </resources>
