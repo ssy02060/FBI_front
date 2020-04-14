@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -19,13 +18,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main.*
 import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.SearchView
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.android.synthetic.main.fragment_home.*
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 
 
 class MainActivity : AppCompatActivity(){
 
-    data class Item(val title: String, @DrawableRes val icon: Int)
+    data class Item(val title: String, @DrawableRes val img: Int)
     var menuItem: MenuItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +73,10 @@ class MainActivity : AppCompatActivity(){
         var searchView = searchItem.actionView as SearchView
         searchView.layoutParams = ActionBar.LayoutParams(Gravity.RIGHT)
         searchView.maxWidth = Integer.MAX_VALUE
+        searchView.setIconifiedByDefault (true)
+        searchView.clearFocus();
+        searchView.setQuery("", false);
+        searchView.setIconified(true);
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String) = false

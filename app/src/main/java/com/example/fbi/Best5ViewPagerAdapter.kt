@@ -7,13 +7,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.row_item.view.*
+import kotlinx.android.synthetic.main.viewpager_best5.view.*
 
-class MyAdapter(private val context: FragmentManager,private val list: List<MainActivity.Item>) :
-    RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class Best5ViewPagerAdapter(
+    private val context: FragmentManager,
+    private val list: List<MainActivity.Item>) :
+    RecyclerView.Adapter<Best5ViewPagerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.viewpager_best5, parent, false)
         return MyViewHolder(view)
     }
 
@@ -28,16 +30,17 @@ class MyAdapter(private val context: FragmentManager,private val list: List<Main
 
     inner class MyViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        var tvName: TextView
-        var imgBanner: ImageView
-
+        var best5_bookTitle: TextView
+        var best5_bookImg: ImageView
+        var best5_backImg: ImageView
         init {
-            tvName = itemView.findViewById(R.id.tvName)
-            imgBanner = itemView.findViewById(R.id.imgBanner)
+            best5_bookTitle = itemView.findViewById(R.id.best5_bookTitle)
+            best5_bookImg = itemView.findViewById(R.id.best5_bookImg)
+            best5_backImg = itemView.findViewById(R.id.best5_backImg)
         }
         fun bind(item: MainActivity.Item) {
-            itemView.tvName.text = "${item.title}"
-            itemView.imgBanner.setImageResource(item.icon)
+            itemView.best5_bookTitle.text = "${item.title}"
+            itemView.best5_bookImg.setImageResource(item.img)
         }
     }
 
