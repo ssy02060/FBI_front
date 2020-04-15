@@ -1,11 +1,19 @@
 package com.example.fbi
 
 import android.app.ActionBar
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -18,13 +26,26 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main.*
 import androidx.annotation.DrawableRes
+import androidx.annotation.NonNull
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+import kotlinx.android.synthetic.main.fragment_camera.*
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import android.graphics.Bitmap;
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
 
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener{
 
+    val REQUEST_IMAGE_CAPTURE = 1
+    lateinit var currentPhotoPath : String
     data class Item(val title: String, @DrawableRes val img: Int)
     var menuItem: MenuItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +65,7 @@ class MainActivity : AppCompatActivity(){
 //        // ↓툴바의 홈버튼의 이미지를 변경(기본 이미지는 뒤로가기 화살표)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_userinfo);
 
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        val navView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
@@ -62,8 +83,21 @@ class MainActivity : AppCompatActivity(){
         btn_userinfo?.setOnClickListener{
             main_layout.openDrawer(Gravity.LEFT)
         }
+
+        settingPermission() // 권한체크 시작
+
+        val bottomNavigationView = findViewById<View>(R.id.bottom_nav_view) as BottomNavigationView
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
     }
 
+    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+        when(p0.itemId){
+            R.id.navigation_camera ->{
+                startCapture()
+            }
+        }
+        return true
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         var menuInflater = menuInflater
@@ -123,8 +157,6 @@ class MainActivity : AppCompatActivity(){
 
     }
 
-
-
     override fun onBackPressed() { //뒤로가기 처리
         if(main_layout.isDrawerOpen(GravityCompat.START)){
             main_layout.closeDrawers()
@@ -135,5 +167,84 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    //권한 설정을 하는 함수
+    fun settingPermission(){
+        var permis = object  : PermissionListener {
+            //            어떠한 형식을 상속받는 익명 클래스의 객체를 생성하기 위해 다음과 같이 작성
+            override fun onPermissionGranted() {
+                Toast.makeText(this@MainActivity, "권한 허가", Toast.LENGTH_SHORT)
+                    .show()
+            }
 
+            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                Toast.makeText(this@MainActivity, "권한 거부", Toast.LENGTH_SHORT)
+                    .show()
+                ActivityCompat.finishAffinity(this@MainActivity) // 권한 거부시 앱 종료
+            }
+        }
+
+        TedPermission.with(this)
+            .setPermissionListener(permis)
+            .setRationaleMessage("카메라 사진 권한 필요")
+            .setDeniedMessage("카메라 권한 요청 거부")
+            .setPermissions(
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.CAMERA)
+            .check()
+    }
+
+    // 사진을 찍고 나서 이미지를 파일로 저장해주는 함수
+//    @Throws(IOException::class)
+    private fun createImageFile() : File {
+        val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir : File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        ).apply{
+            currentPhotoPath = absolutePath
+        }
+    }
+
+    // 사진 촬영 버튼을 누를 때 실행 된다.
+    fun startCapture(){
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                val photoFile: File? = try{
+                    createImageFile()
+                }catch(ex:IOException){
+                    null
+                }
+                photoFile?.also{
+                    val photoURI : Uri = FileProvider.getUriForFile(
+                        this,
+                        "com.example.fbi.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
+            val file = File(currentPhotoPath)
+            if (Build.VERSION.SDK_INT < 28) {
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
+                camera_picture.setImageBitmap(bitmap)
+            }
+            else{
+                val decode = ImageDecoder.createSource(this.contentResolver,
+                    Uri.fromFile(file))
+                val bitmap = ImageDecoder.decodeBitmap(decode)
+                camera_picture.setImageBitmap(bitmap)
+            }
+        }
+    }
 }
