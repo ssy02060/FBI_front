@@ -12,4 +12,11 @@
         <item name="android:statusBarColor">#33D59F9F</item>
     </style>
 
+    <!-- This style is for the splash screen -->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
 </resources>
