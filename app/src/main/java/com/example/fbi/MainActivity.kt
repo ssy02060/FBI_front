@@ -20,16 +20,25 @@ import kotlinx.android.synthetic.main.main.*
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.SearchView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+import kotlinx.android.synthetic.main.drawer_header.*
+import kotlinx.android.synthetic.main.main.*
 
 
 class MainActivity : AppCompatActivity(){
 
     data class Item(val title: String, @DrawableRes val img: Int)
     var menuItem: MenuItem? = null
+    var nickname: String? = null
+    var email: String? = null
+    var photoURL: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
+
+        getAccountInfoFromLoginActivity()
 
         //setting toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -61,10 +70,41 @@ class MainActivity : AppCompatActivity(){
         //샌드위치 메뉴 누르면 드로어 레이아웃 열기
         btn_userinfo?.setOnClickListener{
             main_layout.openDrawer(Gravity.LEFT)
+            //드로우어가 오픈된 후 drawer의 인자를 login Activity에서 받아온 데이터로 입력
+            tv_nickname.text = nickname
+            tv_email.text = email
+            Glide.with(this).load(photoURL).into(iv_profile)
+
+        }
+
+    }
+    //유저의 정보를 loginActivity로부터 받아오는 함수
+    private fun getAccountInfoFromLoginActivity(){
+        if (intent.hasExtra("nickName")) {
+            nickname = intent.getStringExtra("nickName")
+            /* "nickName"라는 이름의 key에 저장된 값이 있다면
+               textView의 내용을 "nickName" key에서 꺼내온 값으로 바꾼다 */
+
+        } else {
+            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
+        }
+        if(intent.hasExtra("email")) {
+            email = intent.getStringExtra("email")
+            /* "nickName"라는 이름의 key에 저장된 값이 있다면
+               textView의 내용을 "nickName" key에서 꺼내온 값으로 바꾼다 */
+
+        } else {
+            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
+        }
+        if(intent.hasExtra("photoURL")) {
+            photoURL = intent.getStringExtra("photoURL")
+            /* "nickName"라는 이름의 key에 저장된 값이 있다면
+               textView의 내용을 "nickName" key에서 꺼내온 값으로 바꾼다 */
+
+        } else {
+            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
         }
     }
-
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         var menuInflater = menuInflater
         menuInflater.inflate(R.menu.top_menu, menu)
