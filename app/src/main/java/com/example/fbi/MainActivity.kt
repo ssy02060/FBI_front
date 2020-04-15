@@ -1,31 +1,31 @@
 package com.example.fbi
 
-import android.app.SearchManager
-import android.content.Context
-import android.content.Intent
-import android.net.wifi.p2p.WifiP2pManager
+import android.app.ActionBar
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.SearchView
-import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.core.view.MenuItemCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.navigation.NavigationView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main.*
+import androidx.annotation.DrawableRes
+import androidx.appcompat.widget.SearchView
+import androidx.viewpager2.widget.ViewPager2
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+
 
 class MainActivity : AppCompatActivity(){
 
+    data class Item(val title: String, @DrawableRes val img: Int)
     var menuItem: MenuItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +33,16 @@ class MainActivity : AppCompatActivity(){
 
         //setting toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
+
         //home navigation (툴바에 홈버튼 활성화)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_userinfo)
 
         //supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_white) // 홈버튼 이미지 변경
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
         //supportActionBar?.setDisplayShowTitleEnabled(false)
 //        // ↓툴바의 홈버튼의 이미지를 변경(기본 이미지는 뒤로가기 화살표)
-//        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_userinfo);
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_userinfo);
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -54,14 +56,14 @@ class MainActivity : AppCompatActivity(){
 
         val actionBar = supportActionBar!!
         actionBar.setDisplayShowTitleEnabled(false)
+        //드로어 안에 로그아웃 버튼 눌러도 반응 없음
 
-        val logout = findViewById(R.id.btn_drawer_logout) as? Button
-        logout?.setOnClickListener {
-            Toast.makeText(this,"logout btn clicked",Toast.LENGTH_SHORT).show()
+        //샌드위치 메뉴 누르면 드로어 레이아웃 열기
+        btn_userinfo?.setOnClickListener{
+            main_layout.openDrawer(Gravity.LEFT)
         }
-
-
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         var menuInflater = menuInflater
@@ -69,6 +71,12 @@ class MainActivity : AppCompatActivity(){
 //        searchview
         var searchItem = menu.findItem(R.id.action_search) ?: return false
         var searchView = searchItem.actionView as SearchView
+        searchView.layoutParams = ActionBar.LayoutParams(Gravity.RIGHT)
+        searchView.maxWidth = Integer.MAX_VALUE
+        searchView.setIconifiedByDefault (true)
+        searchView.clearFocus();
+        searchView.setQuery("", false);
+        searchView.setIconified(true);
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String) = false
@@ -77,6 +85,7 @@ class MainActivity : AppCompatActivity(){
                 return true
             }
         })
+
 
         // Associate searchable configuration with the SearchView
 //        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -109,13 +118,13 @@ class MainActivity : AppCompatActivity(){
                 onSearchRequested()
                 return super.onOptionsItemSelected(item)
             }
-            R.id.home -> {
-                main_layout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
-            }
         }
         return super.onOptionsItemSelected(item)
 
     }
+
+
+
     override fun onBackPressed() { //뒤로가기 처리
         if(main_layout.isDrawerOpen(GravityCompat.START)){
             main_layout.closeDrawers()
