@@ -3,7 +3,6 @@ package com.example.fbi
 import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -32,7 +31,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+import kotlinx.android.synthetic.main.drawer_header.*
+import kotlinx.android.synthetic.main.main.*
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
 import java.io.IOException
@@ -45,17 +47,21 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.drawer_header.*
 
-//import kotlinx.android.synthetic.main.main.*
-//import kotlinx.android.synthetic.main.fragment_camera*
 
-
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity() {
 
     data class Item(val title: String, @DrawableRes val img: Int)
+
     var menuItem: MenuItem? = null
+    var nickname: String? = null
+    var email: String? = null
+    var photoURL: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
+
+        getAccountInfoFromLoginActivity()
 
         //setting toolbar
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -75,8 +81,15 @@ class MainActivity : AppCompatActivity(){
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_gps, R.id.navigation_camera, R.id.navigation_bookshelf, R.id.navigation_mypage))
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home,
+                R.id.navigation_gps,
+                R.id.navigation_camera,
+                R.id.navigation_bookshelf,
+                R.id.navigation_mypage
+            )
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
@@ -85,17 +98,41 @@ class MainActivity : AppCompatActivity(){
         //드로어 안에 로그아웃 버튼 눌러도 반응 없음
 
         //샌드위치 메뉴 누르면 드로어 레이아웃 열기
-        btn_userinfo?.setOnClickListener{
+        btn_userinfo?.setOnClickListener {
             main_layout.openDrawer(Gravity.LEFT)
-
+            //드로우어가 오픈된 후 drawer의 인자를 login Activity에서 받아온 데이터로 입력
+            tv_nickname.text = nickname
+            tv_email.text = email
+            Glide.with(this).load(photoURL).into(iv_profile)
         }
-
-        settingPermission() // 카메라 권한 체크
-        //카메라 버튼 클릭시 이벤트 연결
-
+        settingPermission() // 카메라 권한 체크 시작
     }
 
+    //유저의 정보를 loginActivity로부터 받아오는 함수
+    private fun getAccountInfoFromLoginActivity() {
+        if (intent.hasExtra("nickName")) {
+            nickname = intent.getStringExtra("nickName")
+            /* "nickName"라는 이름의 key에 저장된 값이 있다면
+               textView의 내용을 "nickName" key에서 꺼내온 값으로 바꾼다 */
+        } else {
+            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
+        }
+        if (intent.hasExtra("email")) {
+            email = intent.getStringExtra("email")
+            /* "nickName"라는 이름의 key에 저장된 값이 있다면
+               textView의 내용을 "nickName" key에서 꺼내온 값으로 바꾼다 */
 
+        } else {
+            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
+        }
+        if (intent.hasExtra("photoURL")) {
+            photoURL = intent.getStringExtra("photoURL")
+            /* "nickName"라는 이름의 key에 저장된 값이 있다면
+               textView의 내용을 "nickName" key에서 꺼내온 값으로 바꾼다 */
+        } else {
+            Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         var menuInflater = menuInflater
@@ -105,7 +142,7 @@ class MainActivity : AppCompatActivity(){
         var searchView = searchItem.actionView as SearchView
         searchView.layoutParams = ActionBar.LayoutParams(Gravity.RIGHT)
         searchView.maxWidth = Integer.MAX_VALUE
-        searchView.setIconifiedByDefault (true)
+        searchView.setIconifiedByDefault(true)
         searchView.clearFocus();
         searchView.setQuery("", false);
         searchView.setIconified(true);
@@ -117,34 +154,12 @@ class MainActivity : AppCompatActivity(){
                 return true
             }
         })
-
-
-        // Associate searchable configuration with the SearchView
-//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-//        (menu?.findItem(R.id.action_search)?.actionView as SearchView).apply {
-//            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-//        }
-
-
         return true
     }
 
-//    override fun onSearchRequested(): Boolean {
-//
-//        return super.onSearchRequested()
-//    }
-
-//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-//        when(item.itemId){
-//            //아이템 아니라 로그아웃 버튼 해둠 ..
-//            R.id.drawer_logout-> Toast.makeText(this,"logout clicked",Toast.LENGTH_SHORT).show()
-//        }
-//        return false
-//    }
-
     //액션버튼 클릭 했을 때
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+        when (item?.itemId) {
             R.id.action_search -> {
                 //검색 버튼 눌렀을 때
                 onSearchRequested()
@@ -156,18 +171,18 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onBackPressed() { //뒤로가기 처리
-        if(main_layout.isDrawerOpen(GravityCompat.START)){
+        if (main_layout.isDrawerOpen(GravityCompat.START)) {
             main_layout.closeDrawers()
             // 테스트를 위해 뒤로가기 버튼시 Toast 메시지
-            Toast.makeText(this,"back btn clicked",Toast.LENGTH_SHORT).show()
-        } else{
+            Toast.makeText(this, "back btn clicked", Toast.LENGTH_SHORT).show()
+        } else {
             super.onBackPressed()
         }
     }
 
     //권한 설정을 하는 함수
-    fun settingPermission(){
-        var permis = object  : PermissionListener {
+    fun settingPermission() {
+        var permis = object : PermissionListener {
             //            어떠한 형식을 상속받는 익명 클래스의 객체를 생성하기 위해 다음과 같이 작성
             override fun onPermissionGranted() {
                 Toast.makeText(this@MainActivity, "권한 허가", Toast.LENGTH_SHORT)
@@ -188,8 +203,8 @@ class MainActivity : AppCompatActivity(){
             .setPermissions(
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA)
+                android.Manifest.permission.CAMERA
+            )
             .check()
     }
-
 }
