@@ -3,6 +3,7 @@ package com.example.fbi
 import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -37,15 +38,19 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory
+import android.text.Layout
+import android.widget.ImageView
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
+import kotlinx.android.synthetic.main.drawer_header.*
+
+//import kotlinx.android.synthetic.main.main.*
+//import kotlinx.android.synthetic.main.fragment_camera*
 
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(){
 
-    val REQUEST_IMAGE_CAPTURE = 1
-    lateinit var currentPhotoPath : String
     data class Item(val title: String, @DrawableRes val img: Int)
     var menuItem: MenuItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,22 +87,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //샌드위치 메뉴 누르면 드로어 레이아웃 열기
         btn_userinfo?.setOnClickListener{
             main_layout.openDrawer(Gravity.LEFT)
+
         }
 
-        settingPermission() // 권한체크 시작
+        settingPermission() // 카메라 권한 체크
+        //카메라 버튼 클릭시 이벤트 연결
 
-        val bottomNavigationView = findViewById<View>(R.id.bottom_nav_view) as BottomNavigationView
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
     }
 
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        when(p0.itemId){
-            R.id.navigation_camera ->{
-                startCapture()
-            }
-        }
-        return true
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         var menuInflater = menuInflater
@@ -194,57 +192,4 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             .check()
     }
 
-    // 사진을 찍고 나서 이미지를 파일로 저장해주는 함수
-//    @Throws(IOException::class)
-    private fun createImageFile() : File {
-        val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir : File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_",
-            ".jpg",
-            storageDir
-        ).apply{
-            currentPhotoPath = absolutePath
-        }
-    }
-
-    // 사진 촬영 버튼을 누를 때 실행 된다.
-    fun startCapture(){
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                val photoFile: File? = try{
-                    createImageFile()
-                }catch(ex:IOException){
-                    null
-                }
-                photoFile?.also{
-                    val photoURI : Uri = FileProvider.getUriForFile(
-                        this,
-                        "com.example.fbi.fileprovider",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                }
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            val file = File(currentPhotoPath)
-            if (Build.VERSION.SDK_INT < 28) {
-                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
-                camera_picture.setImageBitmap(bitmap)
-            }
-            else{
-                val decode = ImageDecoder.createSource(this.contentResolver,
-                    Uri.fromFile(file))
-                val bitmap = ImageDecoder.decodeBitmap(decode)
-                camera_picture.setImageBitmap(bitmap)
-            }
-        }
-    }
 }

@@ -58,9 +58,5 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.4' //viewpager indicator
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
     implementation 'org.apache.poi:poi:3.9' // read/write excel file
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    //Glide
-    compile 'com.github.bumptech.glide:glide:4.3.1'
     implementation 'gun0912.ted:tedpermission:2.2.3'
 }

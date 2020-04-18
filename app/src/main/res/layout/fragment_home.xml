@@ -53,20 +53,6 @@
                         android:clipChildren="false"
                         android:clipToPadding="false" />
                 </LinearLayout>
-
-                <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
-                    android:id="@+id/spring_dots_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:dampingRatio="0.5"
-                    app:dotsColor="@color/white"
-                    app:dotsCornerRadius="2dp"
-                    app:dotsSize="16dp"
-                    app:dotsSpacing="6dp"
-                    app:dotsStrokeColor="@color/gray"
-                    app:dotsStrokeWidth="2dp"
-                    app:stiffness="300" />
-
             </LinearLayout>
 
             <LinearLayout

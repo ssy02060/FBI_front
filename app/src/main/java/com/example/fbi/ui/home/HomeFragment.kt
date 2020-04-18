@@ -10,13 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.fbi.Best5ViewPagerAdapter
 import com.example.fbi.MainActivity
 import com.example.fbi.R
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
-import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 import kotlinx.android.synthetic.main.viewpager_best5.view.*
-import me.relex.circleindicator.CircleIndicator3
-import kotlinx.android.synthetic.main.fragment_home.viewPager2 as pager
 
 class HomeFragment : Fragment() {
 
