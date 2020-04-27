@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.viewpager_best5.view.*
 
 class Best5ViewPagerAdapter(
     private val context: FragmentManager,
-    private val list: List<MainActivity.Item>) :
+    private val list: List<MainActivity.best5_Item>) :
     RecyclerView.Adapter<Best5ViewPagerAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -38,7 +38,7 @@ class Best5ViewPagerAdapter(
             best5_bookImg = itemView.findViewById(R.id.best5_bookImg)
             best5_backImg = itemView.findViewById(R.id.best5_backImg)
         }
-        fun bind(item: MainActivity.Item) {
+        fun bind(item: MainActivity.best5_Item) {
             itemView.best5_bookTitle.text = "${item.title}"
             itemView.best5_bookImg.setImageResource(item.img)
         }

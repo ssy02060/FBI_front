@@ -1,9 +1,9 @@
-package com.example.fbi.ui.camera
+package com.example.fbi.ui.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class CameraViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
 
 }

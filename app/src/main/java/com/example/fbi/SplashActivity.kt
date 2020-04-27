@@ -18,8 +18,10 @@ class SplashActivity : AppCompatActivity() {
             // This method will be executed once the timer is over
             // Start your app main activity
 
+            //로그인 오류 해결 전 주석처리
             //LoginActivity로 시작
-            startActivity(Intent(this,LoginActivity::class.java))
+            //startActivity(Intent(this,LoginActivity::class.java))
+            startActivity(Intent(this,MainActivity::class.java))
 
             // close this activity
             finish()

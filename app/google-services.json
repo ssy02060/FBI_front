@@ -1,42 +1,50 @@
 {
   "project_info": {
-    "project_number": "911566926708",
-    "firebase_url": "https://fbifront-839c4.firebaseio.com",
-    "project_id": "fbifront-839c4",
-    "storage_bucket": "fbifront-839c4.appspot.com"
+    "project_number": "346494362074",
+    "firebase_url": "https://fbi-front.firebaseio.com",
+    "project_id": "fbi-front",
+    "storage_bucket": "fbi-front.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:911566926708:android:deed1064e1e6005df53221",
+        "mobilesdk_app_id": "1:346494362074:android:a0c0cf8d6a468f5d7ee0e3",
         "android_client_info": {
           "package_name": "com.example.fbi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "911566926708-5v785nv4hrksnq5s9u915nqnec0hpuvs.apps.googleusercontent.com",
+          "client_id": "346494362074-pn0klte6v02k0i81e2b42p8dk2qt310d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.fbi",
-            "certificate_hash": "994eeb48d2a84efb214a5762f9b13ecb2a9e30f9"
+            "certificate_hash": "a278d95d6b7e713c4cda5c145d1e37098d063cfd"
           }
         },
         {
-          "client_id": "911566926708-r9d07i2jhl7h4b88st8q40801v5anr4s.apps.googleusercontent.com",
+          "client_id": "346494362074-04uo55t7iojkis663ouvg9p6plngjitl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fbi",
+            "certificate_hash": "c171a32f0a1eeadae555907a8157ed9a9e3da21c"
+          }
+        },
+        {
+          "client_id": "346494362074-5qvt2677sicooma00hrttu7agd312r5k.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCiPSE7dZfxIJAEJC_RJLPqaG2YwVhXZUM"
+          "current_key": "AIzaSyCkYD_kuKWFXyYnp0Sow2lDwbbINA3StZo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "911566926708-r9d07i2jhl7h4b88st8q40801v5anr4s.apps.googleusercontent.com",
+              "client_id": "346494362074-5qvt2677sicooma00hrttu7agd312r5k.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

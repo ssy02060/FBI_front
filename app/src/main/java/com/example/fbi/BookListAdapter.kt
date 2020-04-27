@@ -1,0 +1,88 @@
+package com.example.fbi
+
+import android.content.Context
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
+
+class BookListAdapter(val context: Context, val bookList: ArrayList<BookList>) :
+    RecyclerView.Adapter<BookListAdapter.Holder>(), Filterable {
+
+    var filteredList: ArrayList<BookList>? = null
+
+    init{
+        filteredList = bookList
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val view = LayoutInflater.from(context).inflate(R.layout.rv_book_list_item, parent, false)
+        return Holder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return filteredList!!.size
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        val item = filteredList!![position]
+        val listener = View.OnClickListener {it ->
+            Toast.makeText(it.context, "Clicked: ${item.title}", Toast.LENGTH_SHORT).show()
+        }
+        holder?.bind(filteredList!![position], context)
+    }
+
+    inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
+        val book_img = itemView?.findViewById<ImageView>(R.id.img_rv_book_img)
+        val book_title = itemView?.findViewById<TextView>(R.id.tv_rv_book_title)
+        val book_author = itemView?.findViewById<TextView>(R.id.tv_rv_book_author)
+        val book_publisher = itemView?.findViewById<TextView>(R.id.tv_rv_book_publisher)
+        val book_year = itemView?.findViewById<TextView>(R.id.tv_rv_book_year)
+
+        fun bind (booklist: BookList, context: Context) {
+            if (booklist.img != "") {
+                val resourceId = context.resources.getIdentifier(booklist.img, "drawable", context.packageName)
+                book_img?.setImageResource(resourceId)
+            } else {
+                book_img?.setImageResource(R.mipmap.ic_launcher)
+            }
+            book_title?.text = booklist.title
+            book_author?.text = booklist.author
+            book_publisher?.text = booklist.publisher
+            book_year?.text = booklist.year
+        }
+    }
+
+    override fun getFilter(): Filter {
+            return object : Filter() {
+            override fun performFiltering(charSequence: CharSequence): FilterResults {
+                val charString = charSequence.toString() //입력된 string
+                if (charString.isEmpty()) {//입력된 문자 없을 경우
+                    filteredList = bookList //필터링 되지 않은 리스트를 필터링된 리스트로 사용
+                } else {
+                    val filteringList = ArrayList<BookList>()
+                    //일치하는 케이스 검색해서 필터링 중인 리스트(filteringList)에 넣음
+                    for (row in bookList) {
+                        if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.author.toLowerCase().contains(charString.toLowerCase())
+                            || row.publisher.toLowerCase().contains(charString.toLowerCase())) {
+                            Log.e("필터링",row.title)
+                            filteringList.add(row)
+                        }
+                    }
+                    filteredList = filteringList //필터링 중인 리스트를 필터링 된 리스트로 사용
+                }
+                val filterResults = FilterResults()
+                filterResults.values = filteredList //필터링 된 리스트 넘겨줌
+                return filterResults
+            }
+            //필터링 완료 후 recyclerview 업데이트해줌
+            override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
+                filteredList = filterResults.values as ArrayList<BookList>
+                notifyDataSetChanged()
+            }
+        }
+    }
+
+
+}

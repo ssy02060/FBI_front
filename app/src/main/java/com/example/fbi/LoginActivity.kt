@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             catch (e: ApiException){
-
+                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
             }
         }
     }

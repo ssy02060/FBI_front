@@ -34,4 +34,11 @@
         android:name="com.example.fbi.ui.mypage.MyPageFragment"
         android:label="@string/title_mypage"
         tools:layout="@layout/fragment_mypage" />
+
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.example.fbi.ui.search.SearchFragment"
+        android:label="@string/title_search"
+        tools:layout="@layout/fragment_search" />
+
 </navigation>

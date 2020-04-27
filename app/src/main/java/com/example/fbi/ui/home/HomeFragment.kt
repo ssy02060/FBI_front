@@ -18,12 +18,12 @@ class HomeFragment : Fragment() {
     var viewpager2: ViewPager2? = null
 
     override fun onCreateView(inflater: LayoutInflater,container: ViewGroup?,savedInstanceState: Bundle?): View? {
-        val items: List<MainActivity.Item> = listOf(
-            MainActivity.Item("홍길동", R.drawable.img_book),
-            MainActivity.Item("이순신", R.drawable.img_book2),
-            MainActivity.Item("강감찬", R.drawable.img_book3),
-            MainActivity.Item("을지문덕", R.drawable.img_book4),
-            MainActivity.Item("광개토대왕", R.drawable.img_book5)
+        val items: List<MainActivity.best5_Item> = listOf(
+            MainActivity.best5_Item("홍길동", R.drawable.img_book),
+            MainActivity.best5_Item("이순신", R.drawable.img_book2),
+            MainActivity.best5_Item("강감찬", R.drawable.img_book3),
+            MainActivity.best5_Item("을지문덕", R.drawable.img_book4),
+            MainActivity.best5_Item("광개토대왕", R.drawable.img_book5)
         )
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel::class.java)
