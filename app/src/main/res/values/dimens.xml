@@ -2,7 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">0dp</dimen>
     <dimen name="activity_vertical_margin">0dp</dimen>
-    <dimen name="pageMargin">140dp</dimen>
+    <!--얘네를 잘 조절해야 모든 디바이스에서 알맞게 나옴-->
+    <dimen name="pageMargin">30dp</dimen>
     <dimen name="offset">100dp</dimen>
     <dimen name="pageMarginAndOffset">50dp</dimen>
     <dimen name="best5_img_width">80dp</dimen>

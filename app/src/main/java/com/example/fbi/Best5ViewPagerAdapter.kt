@@ -30,16 +30,16 @@ class Best5ViewPagerAdapter(
 
     inner class MyViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        var best5_bookTitle: TextView
+       // var best5_bookTitle: TextView
         var best5_bookImg: ImageView
-        var best5_backImg: ImageView
+       // var best5_backImg: ImageView
         init {
-            best5_bookTitle = itemView.findViewById(R.id.best5_bookTitle)
+            //best5_bookTitle = itemView.findViewById(R.id.best5_bookTitle)
             best5_bookImg = itemView.findViewById(R.id.best5_bookImg)
-            best5_backImg = itemView.findViewById(R.id.best5_backImg)
+            //best5_backImg = itemView.findViewById(R.id.best5_backImg)
         }
         fun bind(item: MainActivity.best5_Item) {
-            itemView.best5_bookTitle.text = "${item.title}"
+            //itemView.best5_bookTitle.text = "${item.title}"
             itemView.best5_bookImg.setImageResource(item.img)
         }
     }

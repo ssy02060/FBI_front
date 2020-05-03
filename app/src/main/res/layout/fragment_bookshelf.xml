@@ -22,8 +22,8 @@
 
     <ImageView
         android:id="@+id/iv_bookshelf"
-        android:layout_width="411dp"
-        android:layout_height="658dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:src="@drawable/bookshelf"
         app:layout_constraintStart_toStartOf="parent"

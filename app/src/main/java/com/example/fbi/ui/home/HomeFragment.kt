@@ -34,10 +34,10 @@ class HomeFragment : Fragment() {
 
         viewPager2.adapter = adapter
         viewPager2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        viewPager2.offscreenPageLimit = 2 //가운데 아이템 + 양쪽 2개씩 4개,총 5개 만 보여짐
+        viewPager2.offscreenPageLimit = 2 //양쪽에 2개씩 총 5개의 페이지 생김
         viewPager2.currentItem = 1000
 
-        val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin).toFloat()
+        val pageMargin = resources.getDimensionPixelOffset(R.dimen.pageMargin)
         val pageOffset = resources.getDimensionPixelOffset(R.dimen.offset).toFloat()
 
         viewPager2.setPageTransformer { page, position ->
