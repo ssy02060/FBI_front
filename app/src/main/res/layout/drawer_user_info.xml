@@ -24,17 +24,16 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/iv_profile"
+                android:id="@+id/iv_drawer_profile"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_weight="0"
                 android:src="@drawable/ic_drawer_user" />
 
             <TextView
-                android:id="@+id/tv_nickname"
+                android:id="@+id/tv_drawer_nickname"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0"
+                android:layout_marginLeft="5dp"
                 android:gravity="center|left"
                 android:text="서상윤"
                 android:textColor="#000000"
@@ -50,7 +49,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_email"
+                android:id="@+id/tv_drawer_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -102,15 +101,16 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
+            android:id="@+id/iv_drawer_book_img"
+            android:layout_width="140dp"
             android:layout_height="200dp"
+            android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             app:srcCompat="@drawable/img_book" />
 
         <TextView
-            android:id="@+id/drawer_book_title"
+            android:id="@+id/tv_drawer_book_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -124,7 +124,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/drawer_book_author"
+            android:id="@+id/tv_drawer_book_author"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -137,7 +137,7 @@
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/drawer_book_publisher"
+            android:id="@+id/tv_drawer_book_publisher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"

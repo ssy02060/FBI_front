@@ -1,7 +1,6 @@
 package com.example.fbi
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -16,16 +15,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fbi.ui.home.BookListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_search.*
 
 
 class SearchActivity : AppCompatActivity() {
 
-    var mCtx : Context? = null //search 에서 쓰이는데 지금 안씀
+    var mCtx : Context? = null
     private var bookList: ArrayList<BookList> = ArrayList()
     private var recyclerView: RecyclerView? = null
     private var bookListAdapter: BookListAdapter? = null
-    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -39,20 +39,8 @@ class SearchActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true) //뒤로가기 버튼 보이게
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_arrow);//뒤로가기 버튼 아이콘 변경
 
-        bookList = arrayListOf<BookList>(
-            BookList("책 제목일까", "저자명이다", "한빛출판사", "2017.09.13", "img_book"),
-            BookList("책이란 뭘까", "최지우", "지우출판사", "2017.03.11", "img_book2"),
-            BookList("도서는 이것", "서상윤", "상윤출판사", "2018.09.13", "img_book3"),
-            BookList("도서를 많이 가지고 있다", "박종욱", "상윤출판사", "2017.09.13", "img_book4"),
-            BookList("책책책 책을 읽읍시다", "이호원", "상윤출판사", "2017.05.23", "img_book5"),
-            BookList("아니야", "허창환", "상윤출판사", "2019.09.13", "img_book4"),
-            BookList("맞아", "예효은", "상윤출판사", "2020.09.13", "img_book3")
-        )
-
-        bookListAdapter = BookListAdapter(this, bookList)
-        recyclerView = findViewById<RecyclerView>(R.id.rv_book_list)
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
-        recyclerView!!.adapter = bookListAdapter
+        onSettingBookItem() // 도서 리스트 불러오는 함수
+        onStoreBook() //탐색 도서 저장 처리 함수
 
     }
 
@@ -119,6 +107,44 @@ class SearchActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun onStoreBook(){
+
+        bookListAdapter = BookListAdapter(this, bookList)
+        recyclerView = findViewById<RecyclerView>(R.id.rv_book_list)
+        recyclerView!!.layoutManager = LinearLayoutManager(this)
+        recyclerView!!.adapter = bookListAdapter
+
+        //아이템 클릭 이벤트
+        bookListAdapter!!.itemClick = object: BookListAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                //Toast.makeText(mCtx, position.toString(), Toast.LENGTH_SHORT).show()
+                if(view.isSelected)
+                    btn_store_book.visibility = View.GONE
+                else
+                btn_store_book.visibility = View.VISIBLE
+            }
+        }
+
+        //탐색 도서 저장 버튼 클릭 시
+        btn_store_book?.setOnClickListener {
+            //DB에 사용자 탐색 도서 정보 저장
+        }
+    }
+
+
+    private fun onSettingBookItem() {
+
+        bookList = arrayListOf<BookList>(
+            BookList("책 제목일까", "저자명이다", "한빛출판사", "2017.09.13", "img_book"),
+            BookList("책이란 뭘까", "최지우", "지우출판사", "2017.03.11", "img_book2"),
+            BookList("도서는 이것", "서상윤", "상윤출판사", "2018.09.13", "img_book3"),
+            BookList("도서를 많이 가지고 있다", "박종욱", "상윤출판사", "2017.09.13", "img_book4"),
+            BookList("책책책 책을 읽읍시다", "이호원", "상윤출판사", "2017.05.23", "img_book5"),
+            BookList("아니야", "허창환", "상윤출판사", "2019.09.13", "img_book4"),
+            BookList("맞아", "예효은", "상윤출판사", "2020.09.13", "img_book3")
+        )
     }
 
 }

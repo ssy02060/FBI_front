@@ -1,21 +1,38 @@
-package com.example.fbi
+package com.example.fbi.ui.home
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fbi.BookList
+import com.example.fbi.R
 
-class BookListAdapter(val context: Context, val bookList: ArrayList<BookList>) :
+
+class BookListAdapter(
+    val context: Context,
+    val bookList: ArrayList<BookList>
+) :
     RecyclerView.Adapter<BookListAdapter.Holder>(), Filterable {
 
-    var filteredList: ArrayList<BookList>? = null
+    var filteredList: ArrayList<BookList>? = null //필터링된 아이템 리스트
+    var index : Int = -1 //아이템 배경색 변경 위한 인덱스 저장
+
+    interface ItemClick
+    {
+        fun onClick(view: View, position: Int)
+    }
+    var itemClick: ItemClick? = null
+
 
     init{
         filteredList = bookList
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.rv_book_list_item, parent, false)
         return Holder(view)
@@ -27,14 +44,36 @@ class BookListAdapter(val context: Context, val bookList: ArrayList<BookList>) :
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = filteredList!![position]
-        val listener = View.OnClickListener {it ->
-            Toast.makeText(it.context, "Clicked: ${item.title}", Toast.LENGTH_SHORT).show()
-        }
         holder?.bind(filteredList!![position], context)
+
+        //아이템 클릭 이벤트
+        holder.itemView.setOnClickListener(View.OnClickListener {
+            index = position
+            notifyDataSetChanged() //배경 색 변경된 데이터 리스트에 적용
+            itemClick?.onClick(it, position) //SearchActivity의 클릭이벤트 호출
+        })
+        var color :Int = ContextCompat.getColor(context, R.color.colorSelected);
+        //선택된 아이템 처리
+        if (index === position) {
+
+            if(holder.itemView.isSelected) {
+                holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"))
+                holder.itemView.isSelected = false
+
+            }
+            else{
+                holder.itemView.setBackgroundColor(color)
+                holder.itemView.isSelected = true
+            }
+
+        } else {
+            holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"))
+            holder.itemView.isSelected = false
+        }
     }
 
     inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        val book_img = itemView?.findViewById<ImageView>(R.id.img_rv_book_img)
+        val book_img = itemView?.findViewById<ImageView>(R.id.iv_rv_book_img)
         val book_title = itemView?.findViewById<TextView>(R.id.tv_rv_book_title)
         val book_author = itemView?.findViewById<TextView>(R.id.tv_rv_book_author)
         val book_publisher = itemView?.findViewById<TextView>(R.id.tv_rv_book_publisher)
@@ -83,6 +122,4 @@ class BookListAdapter(val context: Context, val bookList: ArrayList<BookList>) :
             }
         }
     }
-
-
 }
