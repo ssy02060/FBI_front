@@ -9,19 +9,18 @@
     android:fitsSystemWindows="true">
 
     <!--메인 레이아웃-->
-
     <include
         layout="@layout/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--Navigation Drawer-->
+    <!--drawer 레이아웃 (사용자 로그인 정보 및 저장된 탐색 도서 정보 제공)-->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/main_navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="left"
-        app:headerLayout="@layout/drawer_header">
+        app:headerLayout="@layout/drawer_user_info">
 
     </com.google.android.material.navigation.NavigationView>
 
