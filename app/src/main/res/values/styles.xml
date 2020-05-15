@@ -9,6 +9,8 @@
         <!-- 상태바까지 view를 보여줄 수 있다 (for DrawerLayout)-->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <!-- 상태바 색상(for DrawerLayout)-->
+
+
         <item name="android:statusBarColor">#33D59F9F</item>
         <item name="editTextColor">#FFFFFF</item>
     </style>
@@ -18,6 +20,5 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
 
 </resources>

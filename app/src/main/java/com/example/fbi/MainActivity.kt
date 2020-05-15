@@ -1,8 +1,15 @@
 package com.example.fbi
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.ActionBar
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -19,14 +26,23 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main.*
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapView
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 
 
 class MainActivity : AppCompatActivity(){
 
     data class Item(val title: String, @DrawableRes val img: Int)
+
     var menuItem: MenuItem? = null
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
@@ -62,10 +78,13 @@ class MainActivity : AppCompatActivity(){
         btn_userinfo?.setOnClickListener{
             main_layout.openDrawer(Gravity.LEFT)
         }
+
+
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
+    override fun onCreateOptionsMenu(menu: Menu):  Boolean {
         var menuInflater = menuInflater
         menuInflater.inflate(R.menu.top_menu, menu)
 //        searchview
@@ -79,12 +98,14 @@ class MainActivity : AppCompatActivity(){
         searchView.setIconified(true);
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String) = false
-            override fun onQueryTextChange(newText: String): Boolean {
-                //textView.text = newText
-                return true
+                override fun onQueryTextSubmit(query: String) = false
+                override fun onQueryTextChange(newText: String): Boolean {
+                    //textView.text = newText
+                    return true
+                }
             }
-        })
+        )
+
 
 
         // Associate searchable configuration with the SearchView

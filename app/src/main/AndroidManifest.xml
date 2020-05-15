@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!--인터넷 연결 허용하는 퍼미션-->
 
+    <!--현재 위치를 위한 권한 요청-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>  <!--네트워크기반으로 위치 정보 측정-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>  <!--GPS 기반으로 위치 정보 측정-->
+    <!--현재 위치를 위한 권한 요청-->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,25 +25,38 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>></activity>
+            </intent-filter>
+        </activity>
         <!-- Splash Activity-->
 
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
+        <!--Google Map API KEY 등록-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA-SQYTPDJsqBtcac-HiUfsP7-SkTqh7Aw" />
+        <!--Google Map API KEY 등록-->
+
+        <!--구글 플레이 서비스 버전-->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <!--구글 플레이 서비스 버전-->
+
+        <!--안드로이드 파이 버전부터 필요-->
+<!--        <meta-data-->
+<!--            android:name="org.apache.http.legacy"-->
+<!--            android:required="false" />-->
+        <!--안드로이드 파이 버전부터 필요-->
+
+
     </application>
 
 </manifest>
