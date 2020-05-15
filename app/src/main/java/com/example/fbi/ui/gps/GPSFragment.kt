@@ -133,7 +133,7 @@ class GPSFragment : Fragment() {
             googleMap = it
 
             //현재 위치로 이동 버튼 비활성화
-            it.uiSettings.isMyLocationButtonEnabled = false
+//            it.uiSettings.isMyLocationButtonEnabled = false
             googleMap?.addMarker(MarkerOptions().position(Default_loc).title("지우 집"))
 
             //위치 사용 권한이 있는 경우
@@ -142,7 +142,7 @@ class GPSFragment : Fragment() {
                     //현재위치 표시 활설화
                     it.isMyLocationEnabled = true
                     //현재위치로 카메라 이동
-                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
                 }
                 else -> {
                     //권한이 없으면 지정위치(461번지)로 이동

@@ -1,14 +1,6 @@
 package com.example.fbi
 
 import android.content.Intent
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.ActionBar
-import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
 import android.os.PersistableBundle
@@ -37,8 +29,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
-import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
-
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_mypage.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -105,6 +97,15 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "전달된 이름이 없습니다", Toast.LENGTH_SHORT).show()
         }
+
+        //마이페이지 유저 정보 셋팅
+        mp_username.text = nickname
+        mp_useremail.text = email
+        Glide.with(this).load(photoURL).into(mp_userface)
+
+        //홈 유저 정보 셋팅
+        tv_home_recommend_book.text = nickname + "님 맞춤 추천 도서"
+        tv_home_user_book.text = nickname + "님의 관심도서"
     }
 
     //뒤로가기 처리

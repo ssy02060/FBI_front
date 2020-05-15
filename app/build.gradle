@@ -29,7 +29,6 @@ android {
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -37,7 +36,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
 }
 
 dependencies {
@@ -59,7 +57,6 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"//recyclerview for best5 books
     implementation 'androidx.viewpager2:viewpager2:1.0.0' //ViewPager2 for best5 books
     implementation 'me.relex:circleindicator:2.1.4' //viewpager indicator
-    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
     implementation 'gun0912.ted:tedpermission:2.2.3'
 
     //구글 로그인을 위한 sdk 추가
