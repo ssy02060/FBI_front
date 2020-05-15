@@ -78,7 +78,8 @@
         android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="146dp" />
+        tools:layout_editor_absoluteY="146dp"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/acco_chID"

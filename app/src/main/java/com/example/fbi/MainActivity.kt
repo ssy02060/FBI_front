@@ -1,8 +1,20 @@
 package com.example.fbi
 
 import android.content.Intent
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.ActionBar
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
+import android.os.PersistableBundle
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +31,13 @@ import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_user_info.*
 import kotlinx.android.synthetic.main.main.*
+import androidx.appcompat.widget.SearchView
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapView
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 
 
 class MainActivity : AppCompatActivity() {
@@ -155,4 +174,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(searchIntent)
         }
     }
+
+
 }
