@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,12 +22,17 @@ import com.example.fbi.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_gps.*
+import noman.googleplaces.Place
+import noman.googleplaces.PlacesException
+import noman.googleplaces.PlacesListener
 
-class GPSFragment : Fragment() {
+class GPSFragment : Fragment(), PlacesListener {
 
     private lateinit var gpsViewModel: GPSViewModel
 
@@ -52,10 +58,21 @@ class GPSFragment : Fragment() {
 
     var mapView : MapView? = null
 
+//    var fCameraPosition: CameraPosition? = null
+//
+//    var fGeoDataClient: GeoDataClient = null
+//
+//    var fPlaceDetectionClient: PlaceDetectionClient
+
 
     //---------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------
 
+
+    override fun onStart() {
+        super.onStart()
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,8 +98,8 @@ class GPSFragment : Fragment() {
             activity?.let { ActivityCompat.requestPermissions(it, PERMISSIONS, REQUEST_PERMISSION_CODE) }
         }
 
-        var myLocationButton: FloatingActionButton? = activity?.findViewById(R.id.myLocationButton)
-        myLocationButton?.setOnClickListener { onMyLocationButtonClick() }
+//        var myLocationButton: FloatingActionButton? = activity?.findViewById(R.id.myLocationButton)
+//        myLocationButton?.setOnClickListener { onMyLocationButtonClick() }
 
 
         return root
@@ -132,17 +149,20 @@ class GPSFragment : Fragment() {
             //구글맵 멤버 변수에 구글맵 객체 저장
             googleMap = it
 
+//            var autocompleteFragment: Place? = activity.supportFragmentManager().find
+
             //현재 위치로 이동 버튼 비활성화
 //            it.uiSettings.isMyLocationButtonEnabled = false
+
             googleMap?.addMarker(MarkerOptions().position(Default_loc).title("지우 집"))
 
             //위치 사용 권한이 있는 경우
             when {
                 hasPermissions() -> {
-                    //현재위치 표시 활설화
+                    //현재위치 표시 활성화
                     it.isMyLocationEnabled = true
                     //현재위치로 카메라 이동
-                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
                 }
                 else -> {
                     //권한이 없으면 지정위치(461번지)로 이동
@@ -170,10 +190,12 @@ class GPSFragment : Fragment() {
     //---------------------------------------------------------------------------------------------------------------
     //현재 위치 버튼 클릭한 경우
     fun onMyLocationButtonClick() {
-        when {
-            hasPermissions() -> googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
-            else -> Toast.makeText(activity?.applicationContext, " 위치사용권한 설정에 동의해주세요", Toast.LENGTH_LONG).show()
-        }
+//        when {
+//            hasPermissions() -> googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+//            else -> Toast.makeText(activity?.applicationContext, " 위치사용권한 설정에 동의해주세요", Toast.LENGTH_LONG).show()
+//        }
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+
     }
 
     //---------------------------------------------------------------------------------------------------------------
@@ -197,5 +219,27 @@ class GPSFragment : Fragment() {
         super.onLowMemory()
         mapView?.onLowMemory()
     }
+
+    //---------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------
+    //Google Map Places API - 내 주변 도서관, 서점
+    var previous_maker:List<Marker>? = null
+
+    override fun onPlacesFailure(e: PlacesException?) {
+
+    }
+
+    override fun onPlacesStart() {
+
+    }
+
+    override fun onPlacesSuccess(places: MutableList<Place>?) {
+    }
+    override fun onPlacesFinished() {
+
+    }
+
+
 
 }

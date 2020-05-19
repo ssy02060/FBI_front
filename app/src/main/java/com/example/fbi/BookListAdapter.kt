@@ -1,4 +1,4 @@
-package com.example.fbi.ui.home
+package com.example.fbi
 
 import android.content.Context
 import android.graphics.Color
@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fbi.BookList
-import com.example.fbi.R
 
 
 class BookListAdapter(
@@ -52,14 +50,13 @@ class BookListAdapter(
             notifyDataSetChanged() //배경 색 변경된 데이터 리스트에 적용
             itemClick?.onClick(it, position) //SearchActivity의 클릭이벤트 호출
         })
-        var color :Int = ContextCompat.getColor(context, R.color.colorSelected);
+        var color :Int = ContextCompat.getColor(context, R.color.colorSelected)
         //선택된 아이템 처리
         if (index === position) {
 
             if(holder.itemView.isSelected) {
                 holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"))
                 holder.itemView.isSelected = false
-
             }
             else{
                 holder.itemView.setBackgroundColor(color)
@@ -93,7 +90,7 @@ class BookListAdapter(
         }
     }
 
-    override fun getFilter(): Filter {
+    override fun getFilter(): Filter? {
             return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val charString = charSequence.toString() //입력된 string

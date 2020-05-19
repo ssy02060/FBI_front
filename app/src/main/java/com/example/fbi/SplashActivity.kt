@@ -20,8 +20,8 @@ class SplashActivity : AppCompatActivity() {
 
             //로그인 오류 해결 전 주석처리
             //LoginActivity로 시작
-            //startActivity(Intent(this,LoginActivity::class.java))
-            startActivity(Intent(this,MainActivity::class.java))
+            startActivity(Intent(this,LoginActivity::class.java))
+            //startActivity(Intent(this,MainActivity::class.java))
 
             // close this activity
             finish()

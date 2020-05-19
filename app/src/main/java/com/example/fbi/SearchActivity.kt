@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fbi.ui.home.BookListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_search.*
 
@@ -117,16 +116,16 @@ class SearchActivity : AppCompatActivity() {
         recyclerView!!.adapter = bookListAdapter
 
         //아이템 클릭 이벤트
+
         bookListAdapter!!.itemClick = object: BookListAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
                 //Toast.makeText(mCtx, position.toString(), Toast.LENGTH_SHORT).show()
                 if(view.isSelected)
                     btn_store_book.visibility = View.GONE
                 else
-                btn_store_book.visibility = View.VISIBLE
+                    btn_store_book.visibility = View.VISIBLE
             }
         }
-
         //탐색 도서 저장 버튼 클릭 시
         btn_store_book?.setOnClickListener {
             //DB에 사용자 탐색 도서 정보 저장

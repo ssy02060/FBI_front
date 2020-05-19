@@ -166,6 +166,8 @@ class MainActivity : AppCompatActivity() {
             //드로어 열린 후 logout 버튼 클릭 처리
             btn_drawer_logout.setOnClickListener {
                 Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
             }
         }
 

@@ -3,17 +3,21 @@ package com.example.fbi
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.view.*
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private var auth : FirebaseAuth? = null //파이어베이스 인증 객체
     private var googleSigninClient : GoogleSignInClient? = null //구글 로그인 클라이언트 객체
@@ -32,10 +36,15 @@ class LoginActivity : AppCompatActivity() {
         googleSigninClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
 
-        btn_login.setOnClickListener{
-            val signInIntent = googleSigninClient?.getSignInIntent()
-            startActivityForResult(signInIntent, RC_SIGN_IN)
-        }
+        //구글 로그인 버튼 텍스트 변경
+        val textView = btn_login_google.getChildAt(0) as TextView
+        textView.text ="구글 계정으로 로그인 "
+
+        //클릭 이벤트 리스너 설정
+        btn_sign_up.setOnClickListener(this)
+        btn_find_account.setOnClickListener(this)
+        btn_login.setOnClickListener(this)
+        btn_login_google.setOnClickListener(this)
     }
     //구글 로그인 인증을 요청했을 때 결과값을 돌려받는 곳
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -74,5 +83,31 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             }
+    }
+
+    //클릭 이벤트 처리
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            R.id.btn_sign_up -> {
+                Toast.makeText(this, "회원 가입", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, SignUpActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.btn_find_account -> {
+                Toast.makeText(applicationContext, "계정 찾기", Toast.LENGTH_SHORT).show()
+            }
+            R.id.btn_login -> {
+                Toast.makeText(applicationContext, "로그인", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.btn_login_google -> {
+                //로그인 구현 완성될때까지 주석 처리
+                //val signInIntent = googleSigninClient?.getSignInIntent()
+                //startActivityForResult(signInIntent, RC_SIGN_IN)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 }
