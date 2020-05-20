@@ -19,6 +19,7 @@ class BookListAdapter(
 
     var filteredList: ArrayList<BookList>? = null //필터링된 아이템 리스트
     var index : Int = -1 //아이템 배경색 변경 위한 인덱스 저장
+    var filter_option : Int = 0
 
     interface ItemClick
     {
@@ -100,10 +101,33 @@ class BookListAdapter(
                     val filteringList = ArrayList<BookList>()
                     //일치하는 케이스 검색해서 필터링 중인 리스트(filteringList)에 넣음
                     for (row in bookList) {
-                        if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.author.toLowerCase().contains(charString.toLowerCase())
-                            || row.publisher.toLowerCase().contains(charString.toLowerCase())) {
-                            Log.e("필터링",row.title)
-                            filteringList.add(row)
+                        when (filter_option) {
+                            0 -> { //전체 검색
+                                if (row.title.toLowerCase().contains(charString.toLowerCase()) || row.author.toLowerCase().contains(charString.toLowerCase())
+                                    || row.publisher.toLowerCase().contains(charString.toLowerCase())) {
+                                    Log.e("필터링",row.title)
+                                    filteringList.add(row)
+                                }
+                            }
+                            1 -> { //도서명으로 검색
+                                if (row.title.toLowerCase().contains(charString.toLowerCase())) {
+                                    Log.e("필터링",row.title)
+                                    filteringList.add(row)
+                                }
+                            }
+                            2 -> { //저자명으로 검색
+                                if (row.author.toLowerCase().contains(charString.toLowerCase())) {
+                                    Log.e("필터링",row.title)
+                                    filteringList.add(row)
+                                }
+                            }
+                            3 -> { //출판사명으로 검색
+                                if (row.publisher.toLowerCase().contains(charString.toLowerCase())) {
+                                    Log.e("필터링",row.title)
+                                    filteringList.add(row)
+                                }
+                            }
+
                         }
                     }
                     filteredList = filteringList //필터링 중인 리스트를 필터링 된 리스트로 사용
@@ -118,5 +142,9 @@ class BookListAdapter(
                 notifyDataSetChanged()
             }
         }
+    }
+
+    fun setOption(option : Int){
+        filter_option = option
     }
 }

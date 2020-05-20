@@ -3,6 +3,7 @@ package com.example.fbi
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -13,18 +14,24 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_search.*
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), View.OnClickListener {
 
     var mCtx : Context? = null
     private var bookList: ArrayList<BookList> = ArrayList()
     private var recyclerView: RecyclerView? = null
     private var bookListAdapter: BookListAdapter? = null
+    private var filterOption : Int = 0
+    var black: Int = 0
+    var white :Int = 0
+    var light_blue : Int = 0
+    private var searchText : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -40,6 +47,21 @@ class SearchActivity : AppCompatActivity() {
 
         onSettingBookItem() // 도서 리스트 불러오는 함수
         onStoreBook() //탐색 도서 저장 처리 함수
+
+        //검색 옵션 디자인 색상
+        white = ContextCompat.getColor(this, R.color.white)
+        black = ContextCompat.getColor(this, R.color.black)
+        light_blue = ContextCompat.getColor(this, R.color.btn_filter_color)
+
+        //검색 옵션 기본 디자인 설정
+        btn_search_filter_all.isSelected = true
+        btn_search_filter_all.setBackgroundColor(white)
+
+        //검색 옵션 클릭 이벤트
+        btn_search_filter_all.setOnClickListener(this)
+        btn_search_filter_author.setOnClickListener(this)
+        btn_search_filter_title.setOnClickListener(this)
+        btn_search_filter_publisher.setOnClickListener(this)
 
     }
 
@@ -90,6 +112,9 @@ class SearchActivity : AppCompatActivity() {
 
             //텍스트 바뀔때마다 호출
             override fun onQueryTextChange(newText: String): Boolean {
+                searchText = newText
+                Log.e("dddd", filterOption.toString() + "를")
+                bookListAdapter?.setOption(filterOption) //검색 옵션 설정
                 bookListAdapter?.getFilter()?.filter(newText)
                 return true
             }
@@ -146,4 +171,63 @@ class SearchActivity : AppCompatActivity() {
         )
     }
 
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.btn_search_filter_all -> {
+                if(searchText != null) {
+                    checkClickSearchOption()
+                    filterOption = 0
+                    btn_search_filter_all.isSelected = true
+                    btn_search_filter_all.setTextColor(black)
+                    bookListAdapter?.setOption(filterOption) //검색 옵션 설정
+                    bookListAdapter?.getFilter()?.filter(searchText)
+                }
+            }
+            R.id.btn_search_filter_title -> {
+                if(searchText != null) {
+                    checkClickSearchOption()
+                    filterOption = 1
+                    btn_search_filter_title.isSelected = true
+                    btn_search_filter_title.setTextColor(black)
+                    bookListAdapter?.setOption(filterOption) //검색 옵션 설정
+                    bookListAdapter?.getFilter()?.filter(searchText)
+                }
+            }
+            R.id.btn_search_filter_author -> {
+                if(searchText != null) {
+                    checkClickSearchOption()
+                    filterOption = 2
+                    btn_search_filter_author.isSelected = true
+                    btn_search_filter_author.setTextColor(black)
+                    bookListAdapter?.setOption(filterOption) //검색 옵션 설정
+                    bookListAdapter?.getFilter()?.filter(searchText)
+                }
+            }
+            R.id.btn_search_filter_publisher -> {
+                if(searchText != null) {
+                    checkClickSearchOption()
+                    filterOption = 2
+                    btn_search_filter_publisher.isSelected = true
+                    btn_search_filter_publisher.setTextColor(black)
+                    bookListAdapter?.setOption(filterOption) //검색 옵션 설정
+                    bookListAdapter?.getFilter()?.filter(searchText)
+                }
+            }
+        }
+    }
+
+    //검색 옵션 중복 클릭 방지
+    private fun checkClickSearchOption(){
+
+        if(btn_search_filter_all.isSelected||btn_search_filter_title.isSelected||btn_search_filter_author.isSelected||btn_search_filter_publisher.isSelected){
+            btn_search_filter_all.isSelected = false
+            btn_search_filter_title.isSelected = false
+            btn_search_filter_author.isSelected = false
+            btn_search_filter_publisher.isSelected = false
+            btn_search_filter_all.setBackgroundColor(light_blue)
+            btn_search_filter_title.setBackgroundColor(light_blue)
+            btn_search_filter_author.setBackgroundColor(light_blue)
+            btn_search_filter_publisher.setBackgroundColor(light_blue)
+        }
+    }
 }
