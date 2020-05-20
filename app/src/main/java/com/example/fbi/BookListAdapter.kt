@@ -127,7 +127,6 @@ class BookListAdapter(
                                     filteringList.add(row)
                                 }
                             }
-
                         }
                     }
                     filteredList = filteringList //필터링 중인 리스트를 필터링 된 리스트로 사용

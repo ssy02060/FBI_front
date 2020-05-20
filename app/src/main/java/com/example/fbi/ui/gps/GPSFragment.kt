@@ -7,27 +7,25 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.fbi.PlaceList
+import com.example.fbi.PlaceListAdapter
 import com.example.fbi.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.fragment_gps.*
 import noman.googleplaces.Place
 import noman.googleplaces.PlacesException
 import noman.googleplaces.PlacesListener
@@ -35,6 +33,10 @@ import noman.googleplaces.PlacesListener
 class GPSFragment : Fragment(), PlacesListener {
 
     private lateinit var gpsViewModel: GPSViewModel
+    //장소 클래스 추가
+    private var placeList: ArrayList<PlaceList> = ArrayList()
+    private var recyclerView: RecyclerView? = null
+    private var placeListAdapter: PlaceListAdapter? = null
 
     //---------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------
@@ -101,6 +103,12 @@ class GPSFragment : Fragment(), PlacesListener {
 //        var myLocationButton: FloatingActionButton? = activity?.findViewById(R.id.myLocationButton)
 //        myLocationButton?.setOnClickListener { onMyLocationButtonClick() }
 
+        onSettingPlaceItem()//장소 아이템 추가
+        //장소 목록 어댑터 설정
+        placeListAdapter = PlaceListAdapter(activity!!, placeList)
+        recyclerView = root.findViewById<RecyclerView>(R.id.rv_place_list)
+        recyclerView!!.layoutManager = LinearLayoutManager(activity!!)
+        recyclerView!!.adapter = placeListAdapter
 
         return root
     }
@@ -238,6 +246,19 @@ class GPSFragment : Fragment(), PlacesListener {
     }
     override fun onPlacesFinished() {
 
+    }
+
+    //장소 아이템 셋팅
+    private fun onSettingPlaceItem() {
+
+        placeList = arrayListOf<PlaceList>(
+            PlaceList("서점1", "대구 달서구 성서서로 73길 35", "200m"),
+            PlaceList("서점2", "대구 달서구 서당로 7길 2", "300m"),
+            PlaceList("서점3", "대구 달서구 신당동 461번지", "400m"),
+            PlaceList("도서관1", "대구 달서구 신당동 461번지", "400m"),
+            PlaceList("도서관2", "대구 달서구 신당동 461번지", "400m"),
+            PlaceList("도서관3", "대구 달서구 신당동 461번지", "200m")
+        )
     }
 
 
