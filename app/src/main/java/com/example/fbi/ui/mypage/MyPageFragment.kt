@@ -1,5 +1,6 @@
 package com.example.fbi.ui.mypage
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.fbi.LoginActivity
 import com.example.fbi.R
 
 class MyPageFragment : Fragment(), View.OnClickListener {
@@ -60,7 +62,8 @@ class MyPageFragment : Fragment(), View.OnClickListener {
                 Toast.makeText(activity?.applicationContext, "맞춤 설정", Toast.LENGTH_SHORT).show()
             }
             R.id.acco_logout -> {
-                Toast.makeText(activity?.applicationContext, "로그아웃", Toast.LENGTH_SHORT).show()
+                val intent = Intent(activity!!, LoginActivity::class.java)
+                startActivity(intent)
             }
             R.id.guide_help -> {
                 Toast.makeText(activity?.applicationContext, "도움말", Toast.LENGTH_SHORT).show()

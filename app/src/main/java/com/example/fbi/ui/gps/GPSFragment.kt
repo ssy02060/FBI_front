@@ -13,12 +13,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.fbi.PlaceList
+import com.example.fbi.PlaceListAdapter
 import com.example.fbi.R
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -30,11 +35,18 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.HashSet
 import com.google.android.libraries.places.api.Places
+import noman.googleplaces.Place
+import noman.googleplaces.PlacesException
+import noman.googleplaces.PlacesListener
 
 //, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback
 class GPSFragment : Fragment(), PlacesListener {
 
     private lateinit var gpsViewModel: GPSViewModel
+    //장소 클래스 추가
+    private var placeList: ArrayList<PlaceList> = ArrayList()
+    private var recyclerView: RecyclerView? = null
+    private var placeListAdapter: PlaceListAdapter? = null
 
     //---------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------
@@ -118,10 +130,8 @@ class GPSFragment : Fragment(), PlacesListener {
 //        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 //        mapFragment!!.getMapAsync(this)
 
-        button.setOnClickListener {
-//            showPlaceInformation(currentPosition)
+        btn_gps_book.setOnClickListener {
             showPlaceInformation(getMyLocation())
-
         }
     }
     //---------------------------------------------------------------------------------------------------------------
@@ -175,8 +185,9 @@ class GPSFragment : Fragment(), PlacesListener {
                 hasPermissions() -> {
                     //현재위치 표시 활성화
                     it.isMyLocationEnabled = true
+
                     //현재위치로 카메라 이동
-                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
                 }
                 else -> {
                     //권한이 없으면 지정위치(461번지)로 이동
@@ -205,10 +216,10 @@ class GPSFragment : Fragment(), PlacesListener {
     //현재 위치 버튼 클릭한 경우
 //    fun onMyLocationButtonClick() {
 //        when {
-//            hasPermissions() -> googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
+//            hasPermissions() -> googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
 //            else -> Toast.makeText(activity?.applicationContext, " 위치사용권한 설정에 동의해주세요", Toast.LENGTH_LONG).show()
 //        }
-////        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+//        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
 //
 //    }
 
@@ -253,7 +264,6 @@ class GPSFragment : Fragment(), PlacesListener {
 
             var i : Int = 1
 
-
             places?.let {
                 for (place in it) {
 
@@ -276,6 +286,8 @@ class GPSFragment : Fragment(), PlacesListener {
                     dist = getDisance(getMyLocation(), latLng)
                     Log.e("hi", dist.toString())
 
+                    onSettingPlaceItem(title,addr,"0")
+                    Log.e("첫번쨰 아이템", placeList[0].title)
                     i++
 
                     val item = googleMap?.addMarker(markerOptions)
@@ -284,6 +296,8 @@ class GPSFragment : Fragment(), PlacesListener {
                     }
                 }
             }
+
+            onSettingAdapter()//어댑터 설정
 
             //중복 마커 제거
             val hashSet = HashSet<Marker>()
@@ -354,6 +368,20 @@ class GPSFragment : Fragment(), PlacesListener {
         }
     }
 
+    //장소 아이템 셋팅
+    private fun onSettingPlaceItem(title : String, addr : String, distance : String) {
+        var new_place = PlaceList(title, addr, distance)
+        placeList.add(new_place)
+    }
+
+    private fun onSettingAdapter(){
+
+        //장소 목록 어댑터 설정
+        placeListAdapter = PlaceListAdapter(activity!!, placeList)
+        recyclerView = activity?.findViewById<RecyclerView>(R.id.rv_place_list)
+        recyclerView!!.layoutManager = LinearLayoutManager(activity!!)
+        recyclerView!!.adapter = placeListAdapter
+    }
 
     fun getDisance(latlng1:LatLng, latlng2:LatLng): Int {
         var distance:Int = 0
