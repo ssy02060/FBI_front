@@ -9,6 +9,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -120,6 +121,7 @@ class GPSFragment : Fragment(), PlacesListener {
         button.setOnClickListener {
 //            showPlaceInformation(currentPosition)
             showPlaceInformation(getMyLocation())
+
         }
     }
     //---------------------------------------------------------------------------------------------------------------
@@ -174,7 +176,7 @@ class GPSFragment : Fragment(), PlacesListener {
                     //현재위치 표시 활성화
                     it.isMyLocationEnabled = true
                     //현재위치로 카메라 이동
-                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
                 }
                 else -> {
                     //권한이 없으면 지정위치(461번지)로 이동
@@ -203,10 +205,10 @@ class GPSFragment : Fragment(), PlacesListener {
     //현재 위치 버튼 클릭한 경우
 //    fun onMyLocationButtonClick() {
 //        when {
-//            hasPermissions() -> googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+//            hasPermissions() -> googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
 //            else -> Toast.makeText(activity?.applicationContext, " 위치사용권한 설정에 동의해주세요", Toast.LENGTH_LONG).show()
 //        }
-//        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+////        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
 //
 //    }
 
@@ -251,6 +253,7 @@ class GPSFragment : Fragment(), PlacesListener {
 
             var i : Int = 1
 
+
             places?.let {
                 for (place in it) {
 
@@ -263,15 +266,17 @@ class GPSFragment : Fragment(), PlacesListener {
                     val title : String = i.toString()+ " " + place.name // place.name -> 가게 이름  //title -> marker 제목
                     val addr:String = markerSnippet //markerSnippet -> 제목 아래에 표시되는 추가 텍스트
 
+                    var dist : Int = 0
 
 
                     markerOptions.position(latLng)  //marker 위치
                     markerOptions.title(title)  //marker 제목
                     markerOptions.snippet(addr) //marker 제목 아래 추가 텍스트
 
-                    i++
+                    dist = getDisance(getMyLocation(), latLng)
+                    Log.e("hi", dist.toString())
 
-                    markerOptions.title
+                    i++
 
                     val item = googleMap?.addMarker(markerOptions)
                     item?.let { it1 ->
@@ -348,5 +353,30 @@ class GPSFragment : Fragment(), PlacesListener {
             return address.getAddressLine(0).toString()
         }
     }
+
+
+    fun getDisance(latlng1:LatLng, latlng2:LatLng): Int {
+        var distance:Int = 0
+
+        var loc_A:Location? = null
+
+        loc_A?.latitude = latlng1.latitude
+        loc_A?.longitude = latlng1.longitude
+
+        var loc_B:Location? = null
+
+        loc_B?.latitude = latlng2.latitude
+        loc_B?.longitude = latlng2.longitude
+
+        if (loc_A != null) {
+            distance = loc_A.distanceTo(loc_B).toInt()
+        }
+
+        return distance
+
+    }
+
+
+
 
 }

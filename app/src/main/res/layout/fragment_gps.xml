@@ -39,7 +39,7 @@
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/googlemapView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+        app:srcCompat="@drawable/ic_action_name" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/googlemapView"
