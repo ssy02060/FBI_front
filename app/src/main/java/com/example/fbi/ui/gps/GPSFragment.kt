@@ -9,9 +9,11 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -61,7 +63,7 @@ class GPSFragment : Fragment(), PlacesListener {
 
     //현재위치를 가져올수 없는 경우 - 461번지 위치
     //LatLng 클래스는 위도와 경도를 가지는 클래스
-    var Default_loc = LatLng(35.796150, 128.494692);    //461번지 - 35.856944, 128.495984
+    var Default_loc = LatLng(35.8696, 128.5955);    //461번지 - 35.856944, 128.495984
 
     //구글 맵 객체를 참조할 멤버 변수
     var googleMap: GoogleMap? = null
@@ -111,13 +113,7 @@ class GPSFragment : Fragment(), PlacesListener {
 
 //        var myLocationButton: FloatingActionButton? = activity?.findViewById(R.id.myLocationButton)
 //        myLocationButton?.setOnClickListener { onMyLocationButtonClick() }
-
-        onSettingPlaceItem()//장소 아이템 추가
-        //장소 목록 어댑터 설정
-        placeListAdapter = PlaceListAdapter(activity!!, placeList)
-        recyclerView = root.findViewById<RecyclerView>(R.id.rv_place_list)
-        recyclerView!!.layoutManager = LinearLayoutManager(activity!!)
-        recyclerView!!.adapter = placeListAdapter
+        showPlaceInformation(Default_loc)
 
         return root
     }
@@ -134,8 +130,7 @@ class GPSFragment : Fragment(), PlacesListener {
 //        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 //        mapFragment!!.getMapAsync(this)
 
-        button.setOnClickListener {
-//            showPlaceInformation(currentPosition)
+        btn_gps_book.setOnClickListener {
             showPlaceInformation(getMyLocation())
         }
     }
@@ -190,8 +185,9 @@ class GPSFragment : Fragment(), PlacesListener {
                 hasPermissions() -> {
                     //현재위치 표시 활성화
                     it.isMyLocationEnabled = true
+
                     //현재위치로 카메라 이동
-                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
                 }
                 else -> {
                     //권한이 없으면 지정위치(461번지)로 이동
@@ -199,6 +195,7 @@ class GPSFragment : Fragment(), PlacesListener {
                 }
             }
         }
+
     }
 
     //---------------------------------------------------------------------------------------------------------------
@@ -281,14 +278,14 @@ class GPSFragment : Fragment(), PlacesListener {
                     val addr:String = markerSnippet //markerSnippet -> 제목 아래에 표시되는 추가 텍스트
 
 
-
                     markerOptions.position(latLng)  //marker 위치
                     markerOptions.title(title)  //marker 제목
                     markerOptions.snippet(addr) //marker 제목 아래 추가 텍스트
 
                     i++
 
-                    markerOptions.title
+                    onSettingPlaceItem(title,addr,"0")
+                    Log.e("첫번쨰 아이템", placeList[0].title)
 
                     val item = googleMap?.addMarker(markerOptions)
                     item?.let { it1 ->
@@ -296,6 +293,8 @@ class GPSFragment : Fragment(), PlacesListener {
                     }
                 }
             }
+
+            onSettingAdapter()//어댑터 설정
 
             //중복 마커 제거
             val hashSet = HashSet<Marker>()
@@ -367,15 +366,17 @@ class GPSFragment : Fragment(), PlacesListener {
     }
 
     //장소 아이템 셋팅
-    private fun onSettingPlaceItem() {
+    private fun onSettingPlaceItem(title : String, addr : String, distance : String) {
+        var new_place = PlaceList(title, addr, distance)
+        placeList.add(new_place)
+    }
 
-        placeList = arrayListOf<PlaceList>(
-            PlaceList("서점1", "대구 달서구 성서서로 73길 35", "200m"),
-            PlaceList("서점2", "대구 달서구 서당로 7길 2", "300m"),
-            PlaceList("서점3", "대구 달서구 신당동 461번지", "400m"),
-            PlaceList("도서관1", "대구 달서구 신당동 461번지", "400m"),
-            PlaceList("도서관2", "대구 달서구 신당동 461번지", "400m"),
-            PlaceList("도서관3", "대구 달서구 신당동 461번지", "200m")
-        )
+    private fun onSettingAdapter(){
+
+        //장소 목록 어댑터 설정
+        placeListAdapter = PlaceListAdapter(activity!!, placeList)
+        recyclerView = activity?.findViewById<RecyclerView>(R.id.rv_place_list)
+        recyclerView!!.layoutManager = LinearLayoutManager(activity!!)
+        recyclerView!!.adapter = placeListAdapter
     }
 }
