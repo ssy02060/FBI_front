@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -365,9 +366,6 @@ class GPSFragment : Fragment(), PlacesListener {
         }
     }
 
-}
-    }
-
     //장소 아이템 셋팅
     private fun onSettingPlaceItem() {
 
@@ -380,7 +378,4 @@ class GPSFragment : Fragment(), PlacesListener {
             PlaceList("도서관3", "대구 달서구 신당동 461번지", "200m")
         )
     }
-
-
-
 }
