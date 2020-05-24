@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -20,16 +22,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fbi.PlaceList
 import com.example.fbi.PlaceListAdapter
 import com.example.fbi.R
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.fragment_gps.*
+import noman.googleplaces.*
+import java.io.IOException
+import java.util.*
+import kotlin.collections.HashSet
+import com.google.android.libraries.places.api.Places
 import noman.googleplaces.Place
 import noman.googleplaces.PlacesException
 import noman.googleplaces.PlacesListener
 
+//, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback
 class GPSFragment : Fragment(), PlacesListener {
 
     private lateinit var gpsViewModel: GPSViewModel
@@ -60,6 +67,7 @@ class GPSFragment : Fragment(), PlacesListener {
 
     var mapView : MapView? = null
 
+    private var previousMarker = ArrayList<Marker>()
 //    var fCameraPosition: CameraPosition? = null
 //
 //    var fGeoDataClient: GeoDataClient = null
@@ -118,6 +126,18 @@ class GPSFragment : Fragment(), PlacesListener {
 
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Build the map.
+//        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+//        mapFragment!!.getMapAsync(this)
+
+        button.setOnClickListener {
+//            showPlaceInformation(currentPosition)
+            showPlaceInformation(getMyLocation())
+        }
+    }
     //---------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------
@@ -197,14 +217,14 @@ class GPSFragment : Fragment(), PlacesListener {
 
     //---------------------------------------------------------------------------------------------------------------
     //현재 위치 버튼 클릭한 경우
-    fun onMyLocationButtonClick() {
+//    fun onMyLocationButtonClick() {
 //        when {
 //            hasPermissions() -> googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
 //            else -> Toast.makeText(activity?.applicationContext, " 위치사용권한 설정에 동의해주세요", Toast.LENGTH_LONG).show()
 //        }
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
-
-    }
+//        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+//
+//    }
 
     //---------------------------------------------------------------------------------------------------------------
     //하단부터 맵뷰의 라이프사이클 함수 호출을 위한 코드들
@@ -243,9 +263,109 @@ class GPSFragment : Fragment(), PlacesListener {
     }
 
     override fun onPlacesSuccess(places: MutableList<Place>?) {
+        activity?.runOnUiThread{
+
+            var i : Int = 1
+
+            places?.let {
+                for (place in it) {
+
+                    val latLng = LatLng(place.latitude, place.longitude)
+
+                    val markerSnippet = getCurrentAddress(latLng)
+
+                    val markerOptions = MarkerOptions()
+
+                    val title : String = i.toString()+ " " + place.name // place.name -> 가게 이름  //title -> marker 제목
+                    val addr:String = markerSnippet //markerSnippet -> 제목 아래에 표시되는 추가 텍스트
+
+
+
+                    markerOptions.position(latLng)  //marker 위치
+                    markerOptions.title(title)  //marker 제목
+                    markerOptions.snippet(addr) //marker 제목 아래 추가 텍스트
+
+                    i++
+
+                    markerOptions.title
+
+                    val item = googleMap?.addMarker(markerOptions)
+                    item?.let { it1 ->
+                        previousMarker.add(it1)
+                    }
+                }
+            }
+
+            //중복 마커 제거
+            val hashSet = HashSet<Marker>()
+            hashSet.addAll(previousMarker)
+            previousMarker.clear()
+            previousMarker.addAll(hashSet)
+        }
     }
     override fun onPlacesFinished() {
 
+    }
+
+    private fun showPlaceInformation(location: LatLng) {
+        googleMap?.clear()//지도 클리어
+        previousMarker.clear()//지역정보 마커 클리어
+
+        NRPlaces.Builder()
+            .listener(this)
+            .key("AIzaSyAlnRylrzdNl-0rf7B6KAqeaPuw6-_lsCs")
+            .latlng(location.latitude, location.longitude)//현재 위치
+            .radius(1000) //500 미터 내에서 검색
+            .type(PlaceType.BOOK_STORE)
+            .build()
+            .execute()
+
+        NRPlaces.Builder()
+            .listener(this)
+            .key("AIzaSyAlnRylrzdNl-0rf7B6KAqeaPuw6-_lsCs")
+            .latlng(location.latitude, location.longitude)//현재 위치
+            .radius(1000) //500 미터 내에서 검색
+            .type(PlaceType.LIBRARY)
+            .build()
+            .execute()
+    }
+
+    fun getCurrentAddress(latlng: LatLng): String {
+
+        //지오코더... GPS를 주소로 변환
+        val geocoder = Geocoder(context, Locale.getDefault())
+
+        val addresses: List<Address>?
+
+        try {
+
+            addresses = geocoder.getFromLocation(
+                latlng.latitude,
+                latlng.longitude,
+                1
+            )
+        } catch (ioException: IOException) {
+            //네트워크 문제
+            Toast.makeText(context, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show()
+            return "지오코더 서비스 사용불가"
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            Toast.makeText(context, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show()
+            return "잘못된 GPS 좌표"
+
+        }
+
+
+        if (addresses == null || addresses.size == 0) {
+            Toast.makeText(context, "주소 미발견", Toast.LENGTH_LONG).show()
+            return "주소 미발견"
+
+        } else {
+            val address = addresses[0]
+            return address.getAddressLine(0).toString()
+        }
+    }
+
+}
     }
 
     //장소 아이템 셋팅
