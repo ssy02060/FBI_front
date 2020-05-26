@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -40,13 +41,14 @@ import noman.googleplaces.PlacesException
 import noman.googleplaces.PlacesListener
 
 //, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback
-class GPSFragment : Fragment(), PlacesListener {
+class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
 
     private lateinit var gpsViewModel: GPSViewModel
     //장소 클래스 추가
     private var placeList: ArrayList<PlaceList> = ArrayList()
     private var recyclerView: RecyclerView? = null
     private var placeListAdapter: PlaceListAdapter? = null
+    var scrollview : ScrollView? = null // 스크롤뷰
 
     //---------------------------------------------------------------------------------------------------------------
     //---------------------------------------------------------------------------------------------------------------
@@ -110,10 +112,6 @@ class GPSFragment : Fragment(), PlacesListener {
             //권한 요청
             activity?.let { ActivityCompat.requestPermissions(it, PERMISSIONS, REQUEST_PERMISSION_CODE) }
         }
-
-//        var myLocationButton: FloatingActionButton? = activity?.findViewById(R.id.myLocationButton)
-//        myLocationButton?.setOnClickListener { onMyLocationButtonClick() }
-        showPlaceInformation(Default_loc)
 
         return root
     }
@@ -187,7 +185,7 @@ class GPSFragment : Fragment(), PlacesListener {
                     it.isMyLocationEnabled = true
 
                     //현재위치로 카메라 이동
-                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(Default_loc, DEFAULT_ZOOM_LEVEL))
+                    it.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
                 }
                 else -> {
                     //권한이 없으면 지정위치(461번지)로 이동
@@ -285,12 +283,12 @@ class GPSFragment : Fragment(), PlacesListener {
                     i++
 
                     onSettingPlaceItem(title,addr,"0")
-                    Log.e("첫번쨰 아이템", placeList[0].title)
 
                     val item = googleMap?.addMarker(markerOptions)
                     item?.let { it1 ->
                         previousMarker.add(it1)
                     }
+                    googleMap?.setOnMarkerClickListener(this) //클릭 이벤트
                 }
             }
 
@@ -302,6 +300,7 @@ class GPSFragment : Fragment(), PlacesListener {
             previousMarker.clear()
             previousMarker.addAll(hashSet)
         }
+
     }
     override fun onPlacesFinished() {
 
@@ -378,5 +377,44 @@ class GPSFragment : Fragment(), PlacesListener {
         recyclerView = activity?.findViewById<RecyclerView>(R.id.rv_place_list)
         recyclerView!!.layoutManager = LinearLayoutManager(activity!!)
         recyclerView!!.adapter = placeListAdapter
+
+        //리스트 아이템 클릭 이벤트
+        placeListAdapter?.setItemClickListener( object : PlaceListAdapter.ItemClickListener{
+            override fun onClick(view: View, position: Int) {
+                Log.d("SSS", "${position}번 리스트 선택")
+                scrollview?.scrollTo(0, position*100)
+
+                var selectedTitle = placeList.get(position).title;
+                var selectedId = selectedTitle.substring(0, selectedTitle.lastIndexOf(" ")); //선택된 리스트 아이템 id
+
+                //선택된 리스트 아이템 id와 일치하는 marker로 카메라 이동
+                for(marker in previousMarker){
+                    var title = marker.getTitle()
+                    if(selectedId.equals(title.substring(0, title.lastIndexOf(" ")))){
+                        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(getMyLocation(), DEFAULT_ZOOM_LEVEL))
+                        googleMap?.animateCamera(
+                            CameraUpdateFactory.newLatLng(
+                                LatLng(marker.getPosition().latitude, marker.getPosition().longitude)
+                            ),
+                            1000,
+                            null
+                        );
+                        break;
+                    }
+                }
+            }
+        })
     }
+
+
+    //마커 클릭 이벤트
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        scrollview = view?.findViewById(R.id.sv_gps)
+        marker?.id
+        Log.e("마커클릭1",marker?.getTitle() + "\n" + marker?.getPosition()+ "\n" + marker?.id);
+        scrollview?.smoothScrollTo(0, 400)
+
+        return true
+    }
+
 }
