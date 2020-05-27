@@ -39,6 +39,7 @@ import com.google.android.libraries.places.api.Places
 import noman.googleplaces.Place
 import noman.googleplaces.PlacesException
 import noman.googleplaces.PlacesListener
+import java.text.DecimalFormat
 
 //, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback
 class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
@@ -65,7 +66,7 @@ class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
 
     //현재위치를 가져올수 없는 경우 - 461번지 위치
     //LatLng 클래스는 위도와 경도를 가지는 클래스
-    var Default_loc = LatLng(35.8696, 128.5955);    //461번지 - 35.856944, 128.495984
+    var Default_loc = LatLng(35.796150, 128.494692);    //461번지 - 35.856944, 128.495984
 
     //구글 맵 객체를 참조할 멤버 변수
     var googleMap: GoogleMap? = null
@@ -193,7 +194,6 @@ class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
                 }
             }
         }
-
     }
 
     //---------------------------------------------------------------------------------------------------------------
@@ -262,6 +262,7 @@ class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
         activity?.runOnUiThread{
 
             var i : Int = 1
+            var dist : Float
 
             places?.let {
                 for (place in it) {
@@ -280,9 +281,12 @@ class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
                     markerOptions.title(title)  //marker 제목
                     markerOptions.snippet(addr) //marker 제목 아래 추가 텍스트
 
-                    i++
+                    dist = getDistance(getMyLocation(), latLng)
+//                    Log.e("hi", dist.toString())
 
-                    onSettingPlaceItem(title,addr,"0")
+                    onSettingPlaceItem(title, addr, dist.toString())
+
+                    i++
 
                     val item = googleMap?.addMarker(markerOptions)
                     item?.let { it1 ->
@@ -300,7 +304,6 @@ class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
             previousMarker.clear()
             previousMarker.addAll(hashSet)
         }
-
     }
     override fun onPlacesFinished() {
 
@@ -406,6 +409,76 @@ class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
         })
     }
 
+    fun getDistance(latlng1:LatLng, latlng2:LatLng): Float{
+
+////----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        var radius : Int = 6366
+
+        var lat_A = latlng1.latitude
+        var lon_A = latlng1.longitude
+
+        var lat_B = latlng2.latitude
+        var lon_B = latlng2.longitude
+
+
+        var r_lat = Math.toRadians(lat_B - lat_A)
+        var r_lon = Math.toRadians(lon_B - lon_A)
+
+        var a = Math.sin(r_lat/2) * Math.sin(r_lat) + Math.cos(Math.toRadians(lat_A)) * Math.cos(Math.toRadians(lat_B)) * Math.sin(r_lon/2) * Math.sin(r_lon/2)
+
+        var c = 2 * Math.asin(Math.sqrt(a))
+//        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        var valueResult = radius * c
+
+        var km = valueResult / 1
+
+        var newFormat:DecimalFormat = DecimalFormat("####")
+
+        var kmInDec = Integer.valueOf(newFormat.format(km))
+
+        var meter = valueResult % 1000
+
+        var meterInDec = Integer.valueOf(newFormat.format(meter))
+
+        return (radius * c).toFloat()
+////----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//        val distance = latlng1.toLocation().distanceTo(latlng2.toLocation())
+//        return distance
+
+
+
+
+//        var distance: Int = 0
+//
+//        Log.e("loc_A 초기", latlng1.latitude.toString())
+//
+//        var loc_A: Location? = null
+//
+//
+//        loc_A?.latitude(latlng1.latitude)
+//        loc_A?.longitude = latlng1.longitude
+//
+//        Log.e("loc_A", loc_A?.latitude.toString())
+//
+//        var loc_B: Location? = null
+//
+//        loc_B?.latitude = latlng2.latitude
+//        loc_B?.longitude = latlng2.longitude
+//.
+//
+//        distance = loc_A?distanceTo(loc_B)?.toInt()!!
+//
+////        Log.e("dist", distance.toString())
+//
+
+    }
+
+    fun LatLng.toLocation() = Location(LocationManager.GPS_PROVIDER).also {
+        it.latitude = latitude
+        it.longitude = longitude
+    }
 
     //마커 클릭 이벤트
     override fun onMarkerClick(marker: Marker?): Boolean {
@@ -416,5 +489,4 @@ class GPSFragment : Fragment(), PlacesListener, GoogleMap.OnMarkerClickListener{
 
         return true
     }
-
 }

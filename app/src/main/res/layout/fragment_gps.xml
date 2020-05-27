@@ -21,7 +21,7 @@
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="@+id/googlemapView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+        app:srcCompat="@drawable/ic_action_name" />
 
     <TextView
         android:id="@+id/text_gps"
@@ -54,7 +54,7 @@
     <ScrollView
         android:id="@+id/sv_gps"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="400dp"
         app:layout_constraintTop_toBottomOf="@+id/googlemapView">
 
         <LinearLayout
