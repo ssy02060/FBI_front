@@ -38,6 +38,7 @@ import com.google.android.libraries.places.api.Places
 import noman.googleplaces.Place
 import noman.googleplaces.PlacesException
 import noman.googleplaces.PlacesListener
+import java.text.DecimalFormat
 
 //, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback
 class GPSFragment : Fragment(), PlacesListener {
@@ -263,6 +264,7 @@ class GPSFragment : Fragment(), PlacesListener {
         activity?.runOnUiThread{
 
             var i : Int = 1
+            var dist : Float
 
             places?.let {
                 for (place in it) {
@@ -276,18 +278,17 @@ class GPSFragment : Fragment(), PlacesListener {
                     val title : String = i.toString()+ " " + place.name // place.name -> 가게 이름  //title -> marker 제목
                     val addr:String = markerSnippet //markerSnippet -> 제목 아래에 표시되는 추가 텍스트
 
-                    var dist : Int = 0
-
 
                     markerOptions.position(latLng)  //marker 위치
                     markerOptions.title(title)  //marker 제목
                     markerOptions.snippet(addr) //marker 제목 아래 추가 텍스트
 
-                    dist = getDisance(getMyLocation(), latLng)
-                    Log.e("hi", dist.toString())
+                    dist = getDistance(getMyLocation(), latLng)
+//                    Log.e("hi", dist.toString())
 
-                    onSettingPlaceItem(title,addr,"0")
-                    Log.e("첫번쨰 아이템", placeList[0].title)
+                    onSettingPlaceItem(title, addr, dist.toString())
+//                    Log.e("첫번쨰 아이템", placeList[0].title)
+
                     i++
 
                     val item = googleMap?.addMarker(markerOptions)
@@ -383,27 +384,76 @@ class GPSFragment : Fragment(), PlacesListener {
         recyclerView!!.adapter = placeListAdapter
     }
 
-    fun getDisance(latlng1:LatLng, latlng2:LatLng): Int {
-        var distance:Int = 0
+    fun getDistance(latlng1:LatLng, latlng2:LatLng): Float{
 
-        var loc_A:Location? = null
+////----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        var radius : Int = 6366
 
-        loc_A?.latitude = latlng1.latitude
-        loc_A?.longitude = latlng1.longitude
+        var lat_A = latlng1.latitude
+        var lon_A = latlng1.longitude
 
-        var loc_B:Location? = null
+        var lat_B = latlng2.latitude
+        var lon_B = latlng2.longitude
 
-        loc_B?.latitude = latlng2.latitude
-        loc_B?.longitude = latlng2.longitude
 
-        if (loc_A != null) {
-            distance = loc_A.distanceTo(loc_B).toInt()
-        }
+        var r_lat = Math.toRadians(lat_B - lat_A)
+        var r_lon = Math.toRadians(lon_B - lon_A)
 
-        return distance
+        var a = Math.sin(r_lat/2) * Math.sin(r_lat) + Math.cos(Math.toRadians(lat_A)) * Math.cos(Math.toRadians(lat_B)) * Math.sin(r_lon/2) * Math.sin(r_lon/2)
+
+        var c = 2 * Math.asin(Math.sqrt(a))
+//        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        var valueResult = radius * c
+
+        var km = valueResult / 1
+
+        var newFormat:DecimalFormat = DecimalFormat("####")
+
+        var kmInDec = Integer.valueOf(newFormat.format(km))
+
+        var meter = valueResult % 1000
+
+        var meterInDec = Integer.valueOf(newFormat.format(meter))
+
+        return (radius * c).toFloat()
+////----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//        val distance = latlng1.toLocation().distanceTo(latlng2.toLocation())
+//        return distance
+
+
+
+
+//        var distance: Int = 0
+//
+//        Log.e("loc_A 초기", latlng1.latitude.toString())
+//
+//        var loc_A: Location? = null
+//
+//
+//        loc_A?.latitude(latlng1.latitude)
+//        loc_A?.longitude = latlng1.longitude
+//
+//        Log.e("loc_A", loc_A?.latitude.toString())
+//
+//        var loc_B: Location? = null
+//
+//        loc_B?.latitude = latlng2.latitude
+//        loc_B?.longitude = latlng2.longitude
+//.
+//
+//        distance = loc_A?distanceTo(loc_B)?.toInt()!!
+//
+////        Log.e("dist", distance.toString())
+//
 
     }
 
+    fun LatLng.toLocation() = Location(LocationManager.GPS_PROVIDER).also {
+        it.latitude = latitude
+        it.longitude = longitude
+    }
 
 
 
