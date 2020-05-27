@@ -2,7 +2,9 @@ package com.example.fbi
 
 import android.app.ActionBar
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -41,8 +43,13 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import android.graphics.Bitmap;
+import android.util.Base64.NO_WRAP
+import android.util.Log
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
+import com.kakao.util.helper.Utility.getPackageInfo
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener{
