@@ -264,8 +264,8 @@ class GPSFragment : Fragment(), PlacesListener {
         activity?.runOnUiThread{
 
             var i : Int = 1
-            var dist : Float
-
+            var dist : Double
+            var distR : Int
             places?.let {
                 for (place in it) {
 
@@ -285,8 +285,10 @@ class GPSFragment : Fragment(), PlacesListener {
 
                     dist = getDistance(getMyLocation(), latLng)
 //                    Log.e("hi", dist.toString())
+                    dist *= 1000
+                    distR = dist.toInt()
 
-                    onSettingPlaceItem(title, addr, dist.toString())
+                    onSettingPlaceItem(title, addr, distR.toString() + " m")
 //                    Log.e("첫번쨰 아이템", placeList[0].title)
 
                     i++
@@ -384,9 +386,8 @@ class GPSFragment : Fragment(), PlacesListener {
         recyclerView!!.adapter = placeListAdapter
     }
 
-    fun getDistance(latlng1:LatLng, latlng2:LatLng): Float{
+    fun getDistance(latlng1:LatLng, latlng2:LatLng): Double{
 
-////----------------------------------------------------------------------------------------------------------------------------------------------------------------------
         var radius : Int = 6366
 
         var lat_A = latlng1.latitude
@@ -394,7 +395,6 @@ class GPSFragment : Fragment(), PlacesListener {
 
         var lat_B = latlng2.latitude
         var lon_B = latlng2.longitude
-
 
         var r_lat = Math.toRadians(lat_B - lat_A)
         var r_lon = Math.toRadians(lon_B - lon_A)
@@ -406,48 +406,17 @@ class GPSFragment : Fragment(), PlacesListener {
 
         var valueResult = radius * c
 
-        var km = valueResult / 1
+//        var km = valueResult / 1
 
         var newFormat:DecimalFormat = DecimalFormat("####")
 
-        var kmInDec = Integer.valueOf(newFormat.format(km))
+//        var kmInDec = Integer.valueOf(newFormat.format(km))
 
         var meter = valueResult % 1000
 
-        var meterInDec = Integer.valueOf(newFormat.format(meter))
+//        var meterInDec = Integer.valueOf(newFormat.format(meter))
 
-        return (radius * c).toFloat()
-////----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-//        val distance = latlng1.toLocation().distanceTo(latlng2.toLocation())
-//        return distance
-
-
-
-
-//        var distance: Int = 0
-//
-//        Log.e("loc_A 초기", latlng1.latitude.toString())
-//
-//        var loc_A: Location? = null
-//
-//
-//        loc_A?.latitude(latlng1.latitude)
-//        loc_A?.longitude = latlng1.longitude
-//
-//        Log.e("loc_A", loc_A?.latitude.toString())
-//
-//        var loc_B: Location? = null
-//
-//        loc_B?.latitude = latlng2.latitude
-//        loc_B?.longitude = latlng2.longitude
-//.
-//
-//        distance = loc_A?distanceTo(loc_B)?.toInt()!!
-//
-////        Log.e("dist", distance.toString())
-//
-
+        return radius * c
     }
 
     fun LatLng.toLocation() = Location(LocationManager.GPS_PROVIDER).also {
